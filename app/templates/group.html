@@ -1,0 +1,44 @@
+{% extends "index.html" %}
+{% import "_wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+{% block title %}
+{{group.name}} - {{super()}}
+{% endblock %}
+{% block index_content %}
+<div class="jumbotron">
+    <h1 class="title">{{group.name}}&nbsp;<small>{{group.groupname|capitalize}}</h1>
+    <div class="list-group-separator"></div>
+    {% if group.description %}
+    {% for item in group.description.split("\n") %}
+        <p>{{item}}</p>
+    {% endfor %}
+    {% endif %}
+</div>
+<div class="jumbotron">
+    <h1 class="title">成员一览</h1>
+    <br />
+        {% for user in group.users.all() %}
+        <div class="post-thumbnail">
+            <a href="{{ url_for('.user', username=user.username) }}">
+                <img class="img-rounded profile-thumbnail" src="{{ user.gravatar(size=64) }}">
+            </a>
+        </div>
+        <div class="post-content">
+            <div class="post-author">
+                <a href="{{ url_for('.user', username=user.username) }}"><h4>{{ user.name }} {% if user.name %} (@{{ user.username }}){% endif %}<h4></a>
+                {%for item in user.about_me.split("\n")%}
+                <p><small>{{item}}</small></p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="progress">
+                <div class="progress-bar" style="width: 100%;"></div>
+        </div>
+        {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{% endblock %}

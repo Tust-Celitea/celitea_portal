@@ -1,0 +1,7 @@
+<p>哈喽, {{ user.username }}!</p>
+<p>要改变汝的邮件地址, <a href="{{ url_for('auth.change_email', token=token, _external=True) }}">戳这里戳这里~</a>.</p>
+<p>啥? 汝没办法戳它?那就用浏览器打开下面的链接呗~:</p>
+<p>{{ url_for('auth.change_email', token=token, _external=True) }}</p>
+<p>天科大计算机精英协会</p>
+<hr />
+<p><small>此邮件是自动发出的,所以不要回复它~(>_<~)</small></p>

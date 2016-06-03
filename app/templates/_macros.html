@@ -1,0 +1,38 @@
+{% macro pagination_widget(pagination, endpoint, fragment='') %}
+<ul class="pagination">
+    <li{% if not pagination.has_prev %} class="disabled"{% endif %}>
+        <a href="{% if pagination.has_prev %}{{ url_for(endpoint, page=pagination.prev_num, **kwargs) }}{{ fragment }}{% else %}#{% endif %}">
+            &laquo;
+        </a>
+    </li>
+    {% for p in pagination.iter_pages() %}
+        {% if p %}
+            {% if p == pagination.page %}
+            <li class="active">
+                <a href="{{ url_for(endpoint, page = p, **kwargs) }}{{ fragment }}">{{ p }}</a>
+            </li>
+            {% else %}
+            <li>
+                <a href="{{ url_for(endpoint, page = p, **kwargs) }}{{ fragment }}">{{ p }}</a>
+            </li>
+            {% endif %}
+        {% else %}
+        <li class="disabled"><a href="#">&hellip;</a></li>
+        {% endif %}
+    {% endfor %}
+    <li{% if not pagination.has_next %} class="disabled"{% endif %}>
+        <a href="{% if pagination.has_next %}{{ url_for(endpoint, page=pagination.next_num, **kwargs) }}{{ fragment }}{% else %}#{% endif %}">
+            &raquo;
+        </a>
+    </li>
+</ul>
+{% endmacro %}
+{% macro grouplist(groups) %}
+<li><a href="{{ url_for('main.group',groupname='android',_external=True)  }}">Android 组</a></li>
+<li><a href="{{ url_for('main.group',groupname='embedded',_external=True)  }}">嵌入式组</a></li>
+<li><a href="{{ url_for('main.group',groupname='frontend',_external=True)  }}">前端设计组</a></li>
+<li><a href="{{ url_for('main.group',groupname='algorithm',_external=True)  }}">算法组</a></li>
+<li class="divider"></li>
+<li class="dropdown-header">新进小组</li>
+<li><a href="{{ url_for('main.group',groupname='linux',_external=True)  }}">Linux 用户组</a></li>
+{% endmacro %}

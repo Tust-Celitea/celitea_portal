@@ -1,0 +1,120 @@
+{% import "_macros.html" as macros %}
+{% block doc -%}
+<!DOCTYPE html>
+<html{% block html_attribs %}{% endblock html_attribs %}>
+{%- block html %}
+  <head>
+    {%- block head %}
+    <title>{% block title %}计算机精英协会{% endblock title %}</title>
+
+    {%- block metas %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    {%- endblock metas %}
+
+    {%- block styles %}
+    <link rel="stylesheet" href="https://fonts.lug.ustc.edu.cn/css?family=Roboto:300,400,500,700" type="text/css">
+    <link href="https://fonts.lug.ustc.edu.cn/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/bootstrap-material-design.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/ripples.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/snackbar.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='css/jquery.dropdown.css') }}"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    {%- endblock styles %}
+    {%- endblock head %}
+  </head>
+  <body{% block body_attribs %}{% endblock body_attribs %}>
+    {% block body -%}
+    {% block navbar %}
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url_for('main.index') }}">Celitea</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="bootstrap-elements.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown"><i class="material-icons">people</i> 各路帮派 <i class="material-icons">arrow_drop_down</i>
+                        </a>
+                        <ul class="dropdown-menu">
+                        {{ macros.grouplist(groups) }}
+                        </ul>
+                    </li>
+                    <li><a href="https://github.com/Tust-Celitea"><i class="material-icons">code</i> Celitea on Github</a></li>
+                    <li><a href="{{ url_for('main.showcase') }}"><i class="material-icons">theaters</i> 成果展示</a></li>
+                    <li><a href="{{ url_for('main.helloclass') }}"><i class="material-icons">face</i> Hello 讲堂</a></li>
+                    {% block navbar_item_left %}
+                    {% endblock %}
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if not current_user.is_authenticated %}
+                    <li><a href="{{ url_for('main.index') }}"><i class="material-icons">assignment</i> 报名</a></li>
+                    {% endif %}
+                    {% block navbar_item_right %}
+                    <li><a href="{{ url_for('main.portal') }}"><i class="material-icons">business</i> 社团门户</a></li>
+                    {% endblock %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {%- endblock navbar %}
+    {% block content -%}
+    <div class="container">
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% block welcome %}
+        <div class="page-header">
+            <h1>哈喽，{% if current_user.is_authenticated %}{{ current_user.name or current_user.username}} (σ≧∀≦)σ {% else %}新朋友 ~(>_<~){% endif %}  ! </h1>
+        </div>
+        {% endblock %}
+        {% block page_content %}{% endblock %}
+    </div>
+    {%- endblock content %}
+    {% block scripts %}
+    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ripples.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/material.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/snackbar.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/moment-with-locales.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.dropdown.js') }}"></script>
+    <script>
+    $.material.init();
+    moment.locale("zh-cn");
+    function flask_moment_render(elem) {
+        $(elem).text(eval('moment("' + $(elem).data('timestamp') + '").' + $(elem).data('format') + ';'));
+        $(elem).removeClass('flask-moment').show();
+    }
+    function flask_moment_render_all() {
+        $('.flask-moment').each(function() {
+            flask_moment_render(this);
+            if ($(this).data('refresh')) {
+                (function(elem, interval) { setInterval(function() { flask_moment_render(elem) }, interval); })(this, $(this).data('refresh'));
+            }
+        })
+    }
+    $(document).ready(function() {
+        flask_moment_render_all();
+    });
+    $(".dropdown-menu select").dropdown();
+    </script>
+    {%- endblock scripts %}
+    {%- endblock body %}
+  </body>
+{%- endblock html %}
+</html>
+{% endblock doc -%}

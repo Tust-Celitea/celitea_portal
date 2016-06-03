@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+
+{% block page_content %}
+<div class="page-header">
+    <h1>
+        哈喽, {{ current_user.username }} ~(>_<~)!
+    </h1>
+    <h3>看起来咱还不知道汝是谁~</h3>
+    <p>
+        咱只能给咱认识的人提供这些信息呐~,汝该收到咱发送的确认邮件地址的邮件了吧 ( ,,´･ω･)ﾉ"(´っω･｀｡)
+    </p>
+    <p>
+        没有啥是一封邮件不能解决的,如果有的话,
+        <a href="{{ url_for('auth.resend_confirmation') }}">那就再来一封</a>  (╯>_<)╯ ┻━┻
+    </p>
+</div>
+{% endblock %}
