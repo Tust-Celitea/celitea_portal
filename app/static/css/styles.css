@@ -1,5 +1,8 @@
 body {
     margin-top:60px;
+    background-image: url("/static/images/circles.png");
+    background-size: cover;
+    background-position: 0px 60px;
 }
 h1.title{
     font-size: 300%;

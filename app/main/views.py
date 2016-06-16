@@ -67,7 +67,6 @@ def register():
 @main.route('/group/<groupname>', methods=['GET', 'POST'])
 def group(groupname):
     group=Group.query.filter_by(groupname=groupname).first_or_404()
-    print(group,file=sys.stderr)
     return render_template('group.html',group=group)
 
 @main.route('/portal', methods=['GET', 'POST'])

@@ -58,7 +58,7 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if not current_user.is_authenticated %}
-                    <li><a href="{{ url_for('main.index') }}"><i class="material-icons">assignment</i> 报名</a></li>
+                    <li><a href="{{ url_for('main.register') }}"><i class="material-icons">assignment</i> 报名</a></li>
                     {% endif %}
                     {% block navbar_item_right %}
                     <li><a href="{{ url_for('main.portal') }}"><i class="material-icons">business</i> 社团门户</a></li>
