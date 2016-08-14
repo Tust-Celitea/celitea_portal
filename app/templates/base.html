@@ -92,8 +92,8 @@
     <script src="{{ url_for('static', filename='js/snackbar.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/moment-with-locales.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/jquery.dropdown.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.particleground.js') }}"></script>    
     <script>
-    $.material.init();
     moment.locale("zh-cn");
     function flask_moment_render(elem) {
         $(elem).text(eval('moment("' + $(elem).data('timestamp') + '").' + $(elem).data('format') + ';'));
@@ -111,6 +111,7 @@
         flask_moment_render_all();
     });
     $(".dropdown-menu select").dropdown();
+    $.material.init();
     </script>
     {%- endblock scripts %}
     {%- endblock body %}

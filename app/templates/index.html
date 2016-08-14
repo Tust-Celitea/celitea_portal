@@ -1,73 +1,157 @@
 {% extends "base.html" %}
 {% import "_wtf.html" as wtf %}
 {% import "_macros.html" as macros %}
-
-{% block page_content %}
-    <div class="row">
-        <div class="col-md-8">
-        {% block index_content %}
-        <div class="jumbotron">
-            <div class="page-header">
-                <h2>各路帮派 <small>Members</small></h2>
-            </div>
-            <div class="row">
+{% block styles %}
+{{ super() }}
+<link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet">
+{% endblock %}
+{% block navbar %}  
+{% endblock %}
+{% block content %}
+    <div class="background"></div>
+    <div class="container-fluid unit" id="heading">    
+        <div id="head-content">
+            <div class="text-shadow">
+            <h1>Celitea</h1>
+            <h2>天津科技大学计算机精英协会</h2>
+            <div class="btn-group btn-group-justified">
+                <a href="javascript:void(0)" class="btn btn-lg" data-toggle="modal" data-target="#main-content">
+                    <i class="material-icons">announcement</i>&nbsp;关于
+                </a>
+                <a href="javascript:void(0)" class="btn btn-lg" data-toggle="modal" data-target="#group-content">
+                    <i class="material-icons">recent_actors</i>&nbsp;小组
+                </a>
+                <a href="javascript:void(0)" class="btn btn-lg" data-toggle="modal" data-target="#project-content">
+                    <i class="material-icons">subject</i>&nbsp;项目
+                </a>
+                <a href="javascript:void(0)" class="btn btn-lg" data-toggle="modal" data-target="#contact-content">
+                    <i class="material-icons">contact_mail</i>&nbsp;联系
+                </a>
             </div>
         </div>
-        <div class="jumbotron">
-            <div class="page-header">
-                <h2>成果展示 <small>Showcase</small></h2>
-            </div>
-            <p>...</p>
-        </div>
-        <div class="jumbotron">
-            <div class="page-header">
-                <h2>Hello 讲堂 <small>Hello Class</small></h2>
-            </div>
-            <p>...</p>
-        </div>
-        {% endblock %}
-        </div>
-    <div class="col-md-4">
-        {% block sidebar %}
-        <div class="panel panel-success">
-            <div class="panel-heading">
-
-                    <h3 class="panel-title">关于计算机精英协会</h3>
+        <div class="list-group">              
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h2 class="panel-title">最新消息&nbsp;🎉</h2>
                 </div>
                 <div class="panel-body">
-                    Panel content
+                <p>[2016/08/14]&nbsp;社团论坛现试运行中 <a href="https://forum.celitea.xyz">戳这~</a></p>
+                <p class="white">[2016/08/14]&nbsp;啊这个没啥内容的网站算是上线了呢……</a></p>
                 </div>
-            </div>
-        <div class="panel panel-info">
-            <div class="panel-heading">
-                <h3 class="panel-title">最近更新</h3>
-            </div>
-            <div class="panel-body">
-                Panel content
-            </div>
+            </div>                
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">友情链接</h3>
-            </div>
-            <div class="panel-body">
-                Panel content
-            </div>
+        <hr />
+        <!-- 备案号是啥咱不认识，啦啦啦…… -->
+        <p class="text-muted">&copy; 2016 天津科技大学计算机精英协会.基于 Bootstrap 和 Bootstrap Material Design 构建。</p>
         </div>
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h3 class="panel-title">和我们联系</h3>
-            </div>
-            <div class="panel-body">
-                Panel content
-            </div>
-        </div>
-        </div>
-        {% endblock %}
     </div>
-<hr />
+    <div class="container modal fade in" id='main-content'>
+        <div class="jumbotron">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h2>(╯°□°）╯︵ ┻━┻</h2>
+            <p>诶？我们刚刚放在这的内容哪里去了？？</p>
+            <P>诶诶？网站维护者也失踪啦 😱（这是要丢锅的节奏么……</p>
+            <small class="white">远方某处传来像是吃饱了的声音……啊声音越来越近了，一定是幻@%%^#E%!#%</small>
+        </div>
+    </div>
+    <div class="container modal fade in" id='group-content'>
+        <div class="jumbotron">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h2>各路帮派</h2>
+            <p>所谓得道有先后，术业有专攻。根据不同社员的兴趣和发展方向，我们成立了专攻于不同领域的不同的小组。</p>
+            <div class="list-group">
+                <div class="list-group-item">
+                    <div class="row-action-primary">
+                        <i class="material-icons">open_in_new</i>
+                    </div>
+                    <div class="row-content">
+                        <h4 class="list-group-item-heading">嵌入式组</h4>
+                        <p class="list-group-item-text">Text to be filled......</p>
+                    </div>
+                </div>
+                <div class="list-group-separator"></div>
+                <div class="list-group-item">
+                    <div class="row-action-primary">
+                        <i class="material-icons">open_in_new</i>
+                    </div>
+                    <div class="row-content">
+                        <h4 class="list-group-item-heading">Android 组</h4>
+                        <p class="list-group-item-text">Text to be filled......</p>
+                    </div>
+                </div>
+                <div class="list-group-separator"></div>
+                <div class="list-group-item">
+                    <div class="row-action-primary">
+                        <i class="material-icons">open_in_new</i>
+                    </div>
+                    <div class="row-content">
+                        <h4 class="list-group-item-heading">Web 和 UI 组</h4>
+                        <p class="list-group-item-text">Text to be filled......</p>
+                    </div>
+                </div>
+                <div class="list-group-separator"></div>
+                <div class="list-group-item">
+                    <div class="row-action-primary">
+                        <i class="material-icons">open_in_new</i>
+                    </div>
+                    <div class="row-content">
+                        <h4 class="list-group-item-heading">算法学习组</h4>
+                        <p class="list-group-item-text">Text to be filled......</p>
+                    </div>
+                </div>
+                <div class="list-group-separator"></div>
+                <div class="list-group-item">
+                    <div class="row-action-primary">
+                        <i class="material-icons">open_in_new</i>
+                    </div>
+                    <div class="row-content">
+                        <h4 class="list-group-item-heading">人事组</h4>
+                        <p class="list-group-item-text">Text to be filled......</p>
+                    </div>
+                </div>
+                <div class="list-group-separator"></div>
+                <div class="list-group-item">
+                    <div class="row-action-primary">
+                        <i class="material-icons">open_in_new</i>
+                    </div>
+                    <div class="row-content">
+                        <h4 class="list-group-item-heading"><del>灵魂中的</del> Linux 用户组</h4>
+                        <p class="list-group-item-text">这个小组的存在一直是个谜……</p>
+                    </div>
+                </div>
+                <div class="list-group-separator"></div>
+            </div>
+            <p>都没有你喜欢的方向？新加入的社员如果能在社团中找到志同道合的伙伴，也是可以自立小组的哦~</p>
+        </div>
+    </div>
+    <div class="container modal fade in" id='project-content'>
+        <div class="jumbotron">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h2>社团各类项（nao）目（dong）一览</h2>
+            <p><a class="btn btn-primary btn-lg">o(*￣3￣)o 我们还在整理资料，等一下啦~</a></p>
+        </div>
+    </div>
+    <div class="container modal fade in" id='contact-content'>
+        <div class="jumbotron">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h2>联络我们</h2>
+            <p>目前是学校放假期间 😂 ,如有要事请直接联系社长。</p>
+            <p><a class="btn btn-primary btn-lg" href='javascript:alert("请迅速打开任何一台电脑上的终端把旁边的字输入进去看输出 (╯・ー・)╯ ┻━┻")'> <span class="material-icons">call</span> 啥，旁边的看不懂？ </a>TEL: echo MTUxMjI4MTk1NzkK | base64 -d</p>
+        </div>
+    </div>
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
+<script>
+    $(document).ready(function(){
+        $('.background').particleground({
+            dotColor: '#5ccbff',
+            lineColor: '#5ccbff'
+        });
+        $('.background').css({
+            'z-index': -2
+        });
+    });
+</script>
 {% endblock %}
