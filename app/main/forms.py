@@ -7,6 +7,7 @@ from .pagedown import PageDownField
 from ..models import *
 
 
+
 class NameForm(Form):
     name = StringField('汝是谁?', validators=[Required()])
     submit = SubmitField('OK')
