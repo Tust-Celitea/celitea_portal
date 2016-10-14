@@ -1,14 +1,14 @@
-{% extends "portal.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
+{% import "_wtf.html" as wtf %}
 
 {% block title %}{{super()}}{% endblock %}
 {% block welcome %}
 {% endblock %}
 {% block page_content %}
 <div class="page-header">
-    <h1>编辑个人资料</h1>
+    <h3>编辑个人资料</h3>
 </div>
-<div class="col-md-6">
+<div class="col s12 m12 l6">
     {{ wtf.quick_form(form) }}
 </div>
 {% endblock %}

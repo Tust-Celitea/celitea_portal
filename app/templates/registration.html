@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}{{ reg.name }} 的报名信息 - {{super()}}{% endblock %}
+{% block page_content %}
+<!-- left -->
+<div class="col s12 m4 l4 center-align">
+    <p class="center-align">
+        <img class="responsive-img" src="{{ url_for('static', filename='registrations/{}'.format(reg.photo)) }}">
+    </p>
+</div>
+<!-- right -->
+<div class="col s12 m8 l8">
+    <h4 class="user-header">{{ reg.name }}</h4>
+    <p>@{{ reg.clssnum }}&nbsp;</p>
+    {% if reg.desc %}
+    <blockquote class="flow-text">
+        {{reg.desc}}
+    </blockquote>
+    {% endif %}
+    {% if reg.ablity %}
+    <blockquote>
+        {{reg.ablity}}
+    </blockquote>
+    {% endif %}
+    <div class="collection">
+        {% if reg.email %}
+            <a href="mailto:{{ reg.email }}" class="collection-item"><i class="material-icons left md-24">email</i>&nbsp;{{ reg.email }}</a>
+        {% endif %}
+        {% if reg.personal_page %}
+            <a href="{{ reg.personal_page }}" class="collection-item"><i class="material-icons left md-24">rss_feed</i>&nbsp;{{ reg.blog }}</a>
+        {% endif %}
+        {% if reg.phone %}
+            <a href="#" class="collection-item"><i class="material-icons left md-24">call</i>&nbsp;{{ reg.phone }}</a>
+        {% endif %}
+        {% if reg.telegram %}
+            <a href="https://telegram.me/{{reg.telegram}}" class="collection-item"><i class="material-icons left md-24">send</i>Telegram:@{{reg.telegram}}</a>
+        {% endif %}
+        {% if reg.qq %}
+            <a href="javascript:void(0)" class="collection-item"><i class="material-icons left md-24">message</i>QQ:{{reg.qq}}</a>
+        {% endif %}
+        {% if reg.wechat %}
+            <a href="javascript:void(0)" class="collection-item"><i class="material-icons left md-24">textsms</i>微信:{{reg.wechat}}</a>
+        {% endif %}
+    </div>
+    {% if priv_reg %}
+    <a href="{{url_for('.registration',id=priv_reg.id)}}" class="waves-effect waves-light btn"><i class="material-icons left md-24">keyboard_arrow_left</i>上一个：{{priv_reg.name}}</a>
+    {% endif %}
+    {% if next_reg %}
+    <a href="{{url_for('.registration',id=next_reg.id)}}" class="waves-effect waves-light btn"><i class="material-icons left md-24">keyboard_arrow_right</i>下一个：{{next_reg.name}}</a>
+    {% endif %}
+</div>
+
+{% endblock %}

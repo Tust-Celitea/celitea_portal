@@ -2,156 +2,87 @@
 {% import "_macros.html" as macros %}
 
 {% block title %}{{ user.name if user.name else user.username }} - {{super()}}{% endblock %}
-{% block navbar_item_right %}
-{% if current_user.can(Permission.MODERATE_COMMENTS) %}
-<li><a href="{{ url_for('main.moderate') }}"><i class="material-icons">forum</i> 留言</a></li>
-{% endif %}
-{% if current_user.is_authenticated %}
-<li class="dropdown">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-        <img src="{{ current_user.gravatar(size=24) }}">
-        {{current_user.username}} ({{current_user.name or current_user.location}}) <b class="caret"></b>
-    </a>
-    <ul class="dropdown-menu">
-        <li><a href="{{ url_for('main.user', username=current_user.username) }}">个人资料</a></li>
-        <li><a href="{{ url_for('auth.change_password') }}">更改密码</a></li>
-        <li><a href="{{ url_for('auth.change_email_request') }}">更改电子邮件地址</a></li>
-        <li><a href="{{ url_for('auth.logout') }}">注销……</a></li>
-    </ul>
-</li>
-{% else %}
-<li><a href="{{ url_for('auth.login') }}"><i class="material-icons">lock</i> 登录</a></li>
-{% endif %}
-{% endblock %}
 {% block page_content %}
-<div class="page-header">
-    <div class="row">
-        <div class="col-md-3">
-            <img class="img-rounded" src="{{ user.gravatar(size=256) }}">
-        </div>
-        <div class="col-md-9">
-            <div class="profile-header">
-                <h1 class="user-header">{{ user.name if user.name else user.username }}
-                    {% if current_user.confirmed %}
-                    <i class="material-icons" title="已确认">verified_user</i>
-                    {% endif %}
-                    {% if user.location %}
-                        <small><span class="label label-info">{{ user.location_name() }}</span><small>
-                    {% endif %}
-                </h1>
-                {% if user.name or user.location %}
-                <p>
-                    {% if user.name %}
-                        <h3>
-                            @{{ user.username }}&nbsp;
-                            {% if user.is_moderator() %}
-                                &nbsp;<a href="mailto:{{ user.email }}"><i class="material-icons">email</i>&nbsp;{{ user.email }}</a>
-                            {% endif %}
-                            {% if user.blog %}
-                                &nbsp;<a href="{{ user.blog }}"><i class="material-icons">rss_feed</i>&nbsp;{{ user.blog }}</a>
-                            {% endif %}
-                        </h3>
-                    {% endif %}
-                </p>
-                {% endif %}
-                {% if user.about_me %}
-                <blockquote>
-                    {%for item in user.about_me.split("\n")%}
-                    <p>{{item}}</p>
-                    {% endfor %}
-                </blockquote>
-                {% endif %}
-                {% if user.qq or user.wechat or user.telegram %}
-                {% endif %}
-                <p>
-                    {% if current_user.can(Permission.MODERATE_COMMENTS) %}
-                    发出了 {{ user.posts.count() }} 条消息.
-                    {% endif %}
-                    写下了 {{ user.comments.count() }} 条评论.</p>
-                <p>
-                    {% if current_user.can(Permission.FOLLOW) and user != current_user %}
-                        {% if not current_user.is_following(user) %}
-                        <a href="{{ url_for('.follow', username=user.username) }}" class="btn btn-raised btn-primary">关注</a>
-                        {% else %}
-                        <a href="{{ url_for('.unfollow', username=user.username) }}" class="btn btn-raised btn-warning">取消关注</a>
-                        {% endif %}
-                    {% endif %}
-                    {% if current_user.is_authenticated and user != current_user and user.is_following(current_user) %}
-                    | <span class="label label-success">正在关注汝呐~</span>
-                    {% endif %}
-                </p>
-                <p>
-                    <div class="btn-toolbar">
-                        {% if user == current_user %}
-                        <a class="btn btn-raised btn-primary" href="{{ url_for('.edit_profile') }}">编辑个人资料</a>
-                        {% endif %}
-                        {% if current_user.is_administrator() %}
-                        <a class="btn btn-raised btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">编辑个人资料 <del>(施展权限汪之禁术)</del></a>
-                        {% endif %}
-                        <div class="btn-group">
-                            <div class="btn-group">
-                                <a href="user.html" data-target="#" class="btn btn-raised btn-info dropdown-toggle" data-toggle="dropdown">
-                                    其它地方的 @{{ user.username }}
-                                    <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    {% if user.telegram %}
-                                    <li>
-                                        <a href="https://telegram.me/{{user.telegram}}">Telegram:@{{user.telegram}}</a>
-                                    </li>
-                                    {% endif %}
-                                    {% if user.qq %}
-                                    <li>
-                                        <a href="javascript:void(0)">QQ:{{user.qq}}</a>
-                                    </li>
-                                    {% endif %}
-                                    {% if user.wechat %}
-                                    <li>
-                                        <a href="javascript:void(0)">微信:{{user.wechat}}</a>
-                                    </li>
-                                    {% endif %}
-                                    {% if user.weibo %}
-                                    <li>
-                                        <a href="http://weibo.com/{{user.weibo}}">新浪微博:@{{user.weibo}}</a>
-                                    </li>
-                                    {% endif %}
-                                    {% if user.twitter %}
-                                    <li>
-                                        <a href="https://twitter.com/{{user.twitter}}">Twitter:@{{user.twitter}}</a>
-                                    </li>
-                                    {% endif %}
-                                    {% if user.googleplus %}
-                                    <li>
-                                        <a href="{{user.googleplus}}">Google+</a>
-                                    </li>
-                                    {% endif %}
-                                    {% if user.github %}
-                                    <li>
-                                        <a href="https://github.com{{user.github}}">Github:@{{user.github}}</a>
-                                    </li>
-                                    {% endif %}
-                                    {% if user.zhihu %}
-                                    <li>
-                                        <a href="https://www.zhihu.com/people/{{user.zhihu}}">知乎:{{user.zhihu}}</a>
-                                    </li>
-                                    {% endif %}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </p>
-            </div>
-        </div>
-    </div>
-
+<!-- left -->
+<div class="col s12 m4 l4 center-align">
+    <p class="center-align"><img class="responsive-img" src="{{ user.gravatar(size=256) }}"></p>
+    <h4 class="user-header center-align">{{ user.name if user.name else user.username }}
+        {% if current_user.confirmed %}
+        <i class="material-icons" title="已确认">verified_user</i>
+        {% endif %}
+        {% if user.location %}
+            <small><span class="label label-info">{{ user.location_name() }}</span><small>
+        {% endif %}
+    </h4>
+    <p class="center-align">@{{ user.username }}&nbsp;</p>
+    <a class='dropdown-button btn  waves-effect waves-light' href='#' data-activates='dropdown1' id="connections">
+        其它地方的 @{{ user.username }}
+        <span class="caret"></span>
+    </a>
+    <ul id='dropdown1' class='dropdown-content flow-text'>
+        {% if user.telegram %}
+        <li>
+            <a href="https://telegram.me/{{user.telegram}}">Telegram:@{{user.telegram}}</a>
+        </li>
+        {% endif %}
+        {% if user.qq %}
+        <li>
+            <a href="javascript:void(0)">QQ:{{user.qq}}</a>
+        </li>
+        {% endif %}
+        {% if user.wechat %}
+        <li>
+            <a href="javascript:void(0)">微信:{{user.wechat}}</a>
+        </li>
+        {% endif %}
+        {% if user.weibo %}
+        <li>
+            <a href="http://weibo.com/{{user.weibo}}">新浪微博:@{{user.weibo}}</a>
+        </li>
+        {% endif %}
+        {% if user.twitter %}
+        <li>
+            <a href="https://twitter.com/{{user.twitter}}">Twitter:@{{user.twitter}}</a>
+        </li>
+        {% endif %}
+        {% if user.googleplus %}
+        <li>
+            <a href="{{user.googleplus}}">Google+</a>
+        </li>
+        {% endif %}
+        {% if user.github %}
+        <li>
+            <a href="https://github.com{{user.github}}">Github:@{{user.github}}</a>
+        </li>
+        {% endif %}
+        {% if user.zhihu %}
+        <li>
+            <a href="https://www.zhihu.com/people/{{user.zhihu}}">知乎:{{user.zhihu}}</a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+<!-- right -->
+<div class="col s12 m8 l8">
+    {% if user.about_me %}
+    <blockquote class="flow-text">
+        {%for item in user.about_me.split("\n")%}
+        <p>{{item}}</p>
+        {% endfor %}
+    </blockquote>
+    {% endif %}
+    {% if user.is_moderator() %}
+        <p>&nbsp;<a href="mailto:{{ user.email }}"><i class="material-icons left md-24">email</i>&nbsp;{{ user.email }}</a></p>
+    {% endif %}
+    {% if user.blog %}
+        <p>&nbsp;<a href="{{ user.blog }}"><i class="material-icons left md-24">rss_feed</i>&nbsp;{{ user.blog }}</a></p>
+    {% endif %}
+    {% if user == current_user %}
+    <a class="btn btn-raised btn-primary" href="{{ url_for('.edit_profile') }}">编辑个人资料</a>
+    {% endif %}
+    {% if current_user.is_administrator() %}
+    <a class="btn btn-raised btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">编辑个人资料 <del>(施展权限汪之禁术)</del></a>
+    {% endif %}
 </div>
 
-
-<h3> {{ user.username }} 的消息</h3>
-{% include '_posts.html' %}
-{% if pagination %}
-<div class="pagination">
-    {{ macros.pagination_widget(pagination, '.user', username=user.username) }}
-</div>
-{% endif %}
 {% endblock %}

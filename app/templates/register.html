@@ -1,19 +1,19 @@
-{% extends "portal.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
+{% import "_wtf.html" as wtf %}
 
 {% block title %}报名 - {{super()}}{% endblock %}
 {% block welcome %}
 {% endblock %}
 {% block page_content %}
 <div class="page-header">
-    <h1>报名&nbsp;<small>好啊好啊~<small></h1>
+    <h3>报名&nbsp;<small>好啊好啊~<small></h3>
 </div>
-<blockquote>
+<blockquote class="flow-text">
     「呵呵呵呵。汝知道狼为什么要在山里头袭击人类吗？」
     <br />
     「那是因为狼想吃人类的脑袋，好得到人类的智慧。」
 </blockquote>
-<div class="col-md-6">
+<div class="col l4 m12 s12">
     {{ wtf.quick_form(form) }}
 </div>
 {% endblock %}

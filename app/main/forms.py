@@ -1,10 +1,10 @@
-from flask.ext.wtf import Form
+from flask_wtf import Form
 from wtforms import StringField, TextAreaField, BooleanField, SelectField,\
-    SubmitField
+    SubmitField,RadioField , SelectMultipleField, FileField
 from wtforms.validators import Required, Length, Email, Regexp
 from wtforms import ValidationError
-from flask.ext.pagedown.fields import PageDownField
-from ..models import Role, User,Group,Registration
+from .pagedown import PageDownField
+from ..models import *
 
 
 class NameForm(Form):
@@ -13,20 +13,22 @@ class NameForm(Form):
 
 class RegisterForm(Form):
     name=StringField('汝是谁?', validators=[Required(),Length(0, 64)])
-    email=StringField('电子邮件地址', validators=[Required(),Length(0, 64)])
+    email=StringField('电子邮件地址', validators=[Required(),Length(0, 64), Email()])
     classnum=StringField('专业和班级', validators=[Required(),Length(0, 64)])
+    phone=StringField('电话号码', validators=[Required(),Length(11)])
     qq = StringField('QQ', validators=[Length(0, 64)])
     wechat = StringField('微信', validators=[Length(0, 64)])
     telegram=StringField('Telegram (用户名，不含"@")', validators=[Length(0, 64)])
     personal_page=StringField('Blog', validators=[Length(0, 64)])
     ablity=TextAreaField('汝都擅长些啥咧？')
     desc=TextAreaField('介绍下汝自己呗~')
+    photo=FileField('不留张照片？', validators=[Required()])
     submit = SubmitField('就这样?')
 
 class EditProfileForm(Form):
     name = StringField('真实姓名', validators=[Length(0, 64)])
     about_me = TextAreaField('介绍下汝自己呗~')
-    location = SelectField('主要小组', coerce=int)
+    tag = SelectMultipleField('标签', coerce=int)
     qq = StringField('QQ', validators=[Length(0, 64)])
     wechat = StringField('微信', validators=[Length(0, 64)])
     telegram=StringField('Telegram (用户名，不含"@")', validators=[Length(0, 64)])
@@ -40,8 +42,9 @@ class EditProfileForm(Form):
 
     def __init__(self,*args, **kwargs):
         super(EditProfileForm, self).__init__(*args, **kwargs)
-        self.location.choices = [(group.id, group.name)
-                             for group in Group.query.order_by(Group.id).all()]
+        self.tag.choices = [(tag.id, tag.name)
+                             for tag in Tag.query.order_by(Tag.id).all()]
+
 
 
 class EditProfileAdminForm(Form):
@@ -53,7 +56,7 @@ class EditProfileAdminForm(Form):
     confirmed = BooleanField('已确认')
     role = SelectField('角色', coerce=int)
     name = StringField('真实姓名', validators=[Length(0, 64)])
-    location = SelectField('主要小组', coerce=int)
+    location = RadioField('主要小组', coerce=int)
     about_me = TextAreaField('介绍')
     submit = SubmitField('提交')
 
@@ -77,7 +80,7 @@ class EditProfileAdminForm(Form):
 
 
 class PostForm(Form):
-    body = PageDownField("支持 Markdown，关于 Markdown 语法的信息 <a href=\"https://github.com/othree/markdown-syntax-zhtw/blob/master/syntax.md\">看看这里呗~</a>", validators=[Required()])
+    body = PageDownField("", validators=[Required()])
     submit = SubmitField('咱写好了')
 
 

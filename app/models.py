@@ -5,7 +5,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from markdown import markdown
 import bleach
 from flask import current_app, request, url_for
-from flask.ext.login import UserMixin, AnonymousUserMixin
+from flask_login import UserMixin, AnonymousUserMixin
 from app.exceptions import ValidationError
 from . import db, login_manager
 
@@ -58,6 +58,11 @@ class Follow(db.Model):
                             primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
+class Connection(db.Model):
+    __tablename__ = 'connections'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'),primary_key=True)
+    user_tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'),primary_key=True)
+
 class Group(db.Model):
     __tablename__='groups'
     id = db.Column(db.Integer, primary_key=True)
@@ -83,15 +88,23 @@ class Group(db.Model):
             db.session.add(role)
         db.session.commit()
 
+class Tag(db.Model):
+    __tablename__='tags'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True, index=True)
+
+
 class Registration(db.Model):
-    __tablename__='registeration'
+    __tablename__='registration'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), index=True)
     classnum = db.Column(db.String(64))
     name=db.Column(db.String(64))
     ablity=db.Column(db.Text())
     desc=db.Column(db.Text())
+    phone=db.Column(db.String(64))
     qq=db.Column(db.String(64))
+    photo=db.Column(db.String(32))
     wechat=db.Column(db.String(64))
     telegram=db.Column(db.String(64))
     personal_page=db.Column(db.Text())
@@ -122,6 +135,7 @@ class User(UserMixin, db.Model):
                                 lazy='dynamic',
                                 cascade='all, delete-orphan')
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
+    tags=db.relationship('Connection', foreign_keys=[Connection.user_id], backref=db.backref('user_tag'), lazy='dynamic')
     qq=db.Column(db.String(64))
     wechat=db.Column(db.String(64))
     telegram=db.Column(db.String(64))
@@ -391,6 +405,13 @@ class Post(db.Model):
         if body is None or body == '':
             raise ValidationError('post does not have a body')
         return Post(body=body)
+
+    @property
+    def summary(self):
+        try:
+            return self.body.split('\n')[:2]
+        except IndexError:
+            return self.body
 
 
 db.event.listen(Post.body, 'set', Post.on_changed_body)

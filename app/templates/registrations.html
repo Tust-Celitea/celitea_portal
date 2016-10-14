@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% import "_wtf.html" as wtf %}
+
+{% block title %}报名查询 - {{super()}}{% endblock %}
+{% block page_content %}
+<div class="page-header">
+    <h3>报名查询</h3>
+</div>
+<div class="col l12 m12 s12">
+    <table class="responsive-table highlight">
+        <tr>
+            <th data-field="name">姓名</th>
+            <th data-field="class">专业和班级</th>
+            <th data-field="email">邮件地址</th>
+        </tr>
+    {% for reg in registrations %}
+    <tr>
+        <td><a href="{{url_for('.registration',id=reg.id)}}">{{reg.name}}</a></td>
+        <td>{{reg.classnum}}</td>
+        <td>{{reg.email}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+
+</div>
+{% endblock %}
+{% block scripts %}
+{{super()}}
+{% endblock %}

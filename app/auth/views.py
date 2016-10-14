@@ -1,5 +1,5 @@
 from flask import render_template, redirect, request, url_for, flash
-from flask.ext.login import login_user, logout_user, login_required, \
+from flask_login import login_user, logout_user, login_required, \
     current_user
 from . import auth
 from .. import db
@@ -22,7 +22,7 @@ def before_request():
 @auth.route('/unconfirmed')
 def unconfirmed():
     if current_user.is_anonymous or current_user.confirmed:
-        return redirect(url_for('main.portal'))
+        return redirect(url_for('main.index'))
     return render_template('auth/unconfirmed.html')
 
 
@@ -33,7 +33,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user is not None and user.verify_password(form.password.data):
             login_user(user, form.remember_me.data)
-            return redirect(request.args.get('next') or url_for('main.portal'))
+            return redirect(request.args.get('next') or url_for('main.index'))
         flash('汝到底是谁?')
     return render_template('auth/login.html', form=form)
 
@@ -67,12 +67,12 @@ def register():
 @login_required
 def confirm(token):
     if current_user.confirmed:
-        return redirect(url_for('main.portal'))
+        return redirect(url_for('main.index'))
     if current_user.confirm(token):
         flash('咱记下来了~ 已确认邮件地址')
     else:
         flash('汝好像来晚了呢~ 验证码已经过期.')
-    return redirect(url_for('main.portal'))
+    return redirect(url_for('main.index'))
 
 
 @auth.route('/confirm')
@@ -82,7 +82,7 @@ def resend_confirmation():
     send_email(current_user.email, '确认账户',
                'auth/email/confirm', user=current_user, token=token)
     flash('咱寄出了一封确认账户的电子邮件呐~去看看汝的收件箱呗.')
-    return redirect(url_for('main.portal'))
+    return redirect(url_for('main.index'))
 
 
 @auth.route('/change-password', methods=['GET', 'POST'])
@@ -103,7 +103,7 @@ def change_password():
 @auth.route('/reset', methods=['GET', 'POST'])
 def password_reset_request():
     if not current_user.is_anonymous:
-        return redirect(url_for('main.portal'))
+        return redirect(url_for('main.index'))
     form = PasswordResetRequestForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -147,7 +147,7 @@ def change_email_request():
                        'auth/email/change_email',
                        user=current_user, token=token)
             flash('咱寄出了一封帮忙更换邮件地址的电子邮件呐~去看看汝新邮箱的的收件箱呗.')
-            return redirect(url_for('main.portal'))
+            return redirect(url_for('main.index'))
         else:
             flash('(￣ε(#￣)☆╰╮(￣▽￣///) 邮件地址或密码不对~.')
     return render_template("auth/change_email.html", form=form)
@@ -160,4 +160,4 @@ def change_email(token):
         flash('汝换了新的邮箱，就是这样.')
     else:
         flash('嗯......汝在说啥？ (无效的请求)')
-    return redirect(url_for('main.portal'))
+    return redirect(url_for('main.index'))

@@ -1,0 +1,68 @@
+<div class="col s12 m12 l12">
+{% if current_user.can(Permission.WRITE_ARTICLES) %}
+<ul class="collapsible" data-collapsible="accordion">
+    <li>
+        <div class="collapsible-header">
+            <i class="material-icons">filter_drama</i>有啥想说的咧?<br />
+            <small>支持 Markdown，关于 Markdown 语法的信息
+                <a href=\"https://github.com/othree/markdown-syntax-zhtw/blob/master/syntax.md\">
+                    看看这里呗~
+                </a>
+            </small>
+        </div>
+        <div class="collapsible-body center-align container" id="post-form">
+            {{ wtf.quick_form(form) }}
+            <br />
+        </div>
+    </li>
+</ul>
+{% endif %}
+</div>
+<div class="post-tabs">
+{% include '_posts.html' %}
+</div>
+<div class="col s12 m12 l4">
+<div class="card">
+    <div class="card-content">
+          <span class="card-title">Card Title</span>
+          <p>I am a very simple card. I am good at containing small bits of information.
+          I am convenient because I require little markup to use effectively.</p>
+    </div>
+    <div class="card-action">
+        <a href="#">This is a link</a>
+        <a href="#">This is a link</a>
+    </div>
+</div>
+</div>
+<div class="col s12 m12 l4">
+<div class="card">
+    <div class="card-content">
+          <span class="card-title">Card Title</span>
+          <p>I am a very simple card. I am good at containing small bits of information.
+          I am convenient because I require little markup to use effectively.</p>
+    </div>
+    <div class="card-action">
+        <a href="#">This is a link</a>
+        <a href="#">This is a link</a>
+    </div>
+</div>
+</div>
+<div class="col s12 m12 l4">
+<div class="card">
+    <div class="card-content">
+          <span class="card-title">Card Title</span>
+          <p>I am a very simple card. I am good at containing small bits of information.
+          I am convenient because I require little markup to use effectively.</p>
+    </div>
+    <div class="card-action">
+        <a href="#">This is a link</a>
+        <a href="#">This is a link</a>
+    </div>
+</div>
+</div>
+{% include '_posts.html' %}
+{% if pagination %}
+<div class="pagination">
+{{ macros.pagination_widget(pagination, '.index') }}
+</div>
+{% endif %}

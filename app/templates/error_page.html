@@ -3,8 +3,7 @@
 {% block title %} {{ code }}: {{ name }}{% endblock %}
 
 {% block page_content %}
-<div class="page-header">
-    <h1>{{ code }}: {{ name }}</h1>
-    <p>{{ description }}</p>
-</div>
+    <h3>{{ code }}: {{ name }}</h3>
+    <hr />
+    <p class="flow-text">{{ description }}</p>
 {% endblock %}
