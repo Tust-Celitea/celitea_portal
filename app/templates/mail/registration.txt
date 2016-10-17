@@ -1,11 +1,41 @@
-哈喽, {{ user.username }}!
+哈喽, {{ reg.name }}!
+这封邮件表示咱收到汝的报名信息了耶，好棒~</a>.
+它大概像这个样子😋
 
-要改变汝的邮件地址,,戳下面的链接啦~
+    姓名:{{ reg.name }}
 
-{{ url_for('auth.confirm', token=token, _external=True) }}
+    专业和班级:{{ reg.classnum }}
 
+    电子邮件地址:{{ reg.email }}
+
+    电话号码:{{ reg.phone }}
+
+{% if reg.qq %}
+    QQ:{{ reg.qq }}
+{% endif %}
+
+{% if reg.wechat %}
+    微信:{{ reg.wechat }}
+{% endif %}
+
+{% if reg.telegram %}
+    Telegram:{{ reg.telegram }}
+{% endif %}
+{% if reg.personal_page %}
+    个人首页:{{ reg.personal_page }}
+{% endif %}
+{% if reg.ablity %}
+    特长与兴趣:{{ reg.ablity }}
+{% endif %}
+{% if reg.desc %}
+    自我介绍:
+    {{ reg.desc }}
+{% endif %}
+
+接下来,不管结果怎么样,咱们都会通知到汝的啦~
+祝好运~
 天科大计算机精英协会
 
-------------------------
+----------------------
 
 此邮件是自动发出的,所以不要回复它~(>_<~)

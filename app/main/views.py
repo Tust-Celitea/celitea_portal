@@ -4,9 +4,10 @@ from flask_login import login_required, current_user
 from flask_sqlalchemy import get_debug_queries
 from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, PostForm,\
-    CommentForm,RegisterForm
+    CommentForm,RegisterForm,InterviewForm
 from .. import db
 from ..models import *
+from ..email import send_email,send_async_email
 from ..decorators import admin_required, permission_required,moderate_required
 from .group import groups
 from werkzeug.utils import secure_filename
@@ -63,8 +64,9 @@ def index():
 def register():
     form = RegisterForm()
     register=Registration()
+    interview=Interview()
     if form.validate_on_submit():
-        register.email = form.classnum.data
+        register.email = form.email.data
         register.classnum =form.classnum.data
         register.name=form.name.data
         register.ablity=form.ablity.data
@@ -85,6 +87,11 @@ def register():
             file.save(os.path.join(current_app.config['UPLOAD_DIR'], filename))
             register.photo = filename
             db.session.add(register)
+            interview.id=register.id
+            interview.status=1
+            db.session.add(interview)
+            send_email(register.email, '{}的报名确认~'.format(register.name),
+                       'mail/registration', reg=register)
             flash('OK，坐下来放松一下呗~')
             return redirect(url_for('.index'))
         else:
@@ -214,17 +221,76 @@ def list_tag():
     return render_template("tags.html",tags=tags)
 
 @main.route('/manage/registrations')
+@main.route('/manage/registrations/<status>')
 @login_required
 @admin_required
-def registrations():
-    reg=Registration.query.all()
+def registrations(status="all"):
+    statuses={"all":0,"ready":1,"confirmed":2,"rejected":3,"talking":4}
+    if not status in statuses:
+        abort(404)
+    if status=="all":
+        reg=Registration.query.order_by("classnum").all()
+    else:
+        reg=[user for user in Registration.query.order_by("classnum").all() if user.interview.status==statuses[status]]
     return render_template("registrations.html",registrations=reg)
 
-@main.route('/manage/registration/<int:id>')
+@main.route('/manage/registration/<int:id>',methods=['GET', 'POST'])
 @login_required
 @admin_required
 def registration(id):
-    reg=Registration.query.filter_by(id=id).first_or_404()
-    priv_reg=Registration.query.filter_by(id=id-1).first()
-    next_reg=Registration.query.filter_by(id=id+1).first()
-    return render_template("registration.html",reg=reg,priv_reg=priv_reg,next_reg=next_reg)
+    reg_query=Registration.query.order_by("id")
+    ids=[0]+[registration.id for registration in reg_query.all()]
+    current_reg=reg_query.filter_by(id=id).first_or_404()
+    current_interview=Interview.query.filter_by(id=id).first()
+    try:
+        priv_reg=reg_query.filter_by(id=ids[ids.index(id)-1]).first()
+    except IndexError:
+        priv_reg=False
+    try:
+        next_reg=reg_query.filter_by(id=ids[ids.index(id)+1]).first()
+    except IndexError:
+        next_reg=False
+    form=InterviewForm()
+    if form.validate_on_submit():
+        current_interview.status=form.status.data
+        current_interview.level=form.level.data
+        current_interview.opinion=form.opinion.data
+        db.session.add(current_interview)
+        return redirect(url_for('.registrations'))
+    form.status.data=current_interview.status
+    form.level.data=current_interview.level
+    form.opinion.data=current_interview.opinion
+    return render_template("registration.html",reg=current_reg,priv_reg=priv_reg,next_reg=next_reg,form=form)
+
+@main.route("/manage/registration/<int:id>/delete")
+@login_required
+@admin_required
+
+def del_reg(id):
+    reg_query=Registration.query.filter_by(id=id).first_or_404()
+    db.session.delete(reg_query)
+    flash("嗯，这个不好吃~")
+    return redirect(url_for('.registrations'))
+
+@main.route('/manage/registrations.csv')
+@login_required
+@admin_required
+def registrations_csv():
+    reg=Registration.query.order_by("id").all()
+    title="姓名,电子邮件地址,专业和班级,电话号码,QQ,微信,Telegram,个人网站,特长与兴趣,自我介绍"
+    str_reg_list=[title]
+    for registration in reg:
+        str_reg="{},{},{},{},{},{},{},{},{}".format(registration.name,
+                                                    registration.email,
+                                                    registration.classnum,
+                                                    registration.phone,
+                                                    registration.qq or "",
+                                                    registration.wechat or "",
+                                                    registration.telegram or "",
+                                                    registration.personal_page or "",
+                                                    registration.ablity or "",
+                                                    registration.desc or "")
+        str_reg_list.append(str_reg)
+    response=make_response("\n".join(str_reg_list))
+    response.headers["Content-type"] = "text/csv"
+    return response

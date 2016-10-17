@@ -7,17 +7,28 @@
     <h3>报名查询</h3>
 </div>
 <div class="col l12 m12 s12">
+    <p>
+    <a href="{{url_for(".registrations",status="all")}}" class="waves-effect waves-light btn">全部</a>
+    <a href="{{url_for(".registrations",status="ready")}}" class="waves-effect waves-light btn">未面试</a>
+    <a href="{{url_for(".registrations",status="confirmed")}}" class="waves-effect waves-light btn">面试通过</a>
+    <a href="{{url_for(".registrations",status="rejected")}}" class="waves-effect waves-light btn">面试未通过</a>
+    <a href="{{url_for(".registrations",status="talking")}}" class="waves-effect waves-light btn">待定</a>
+    </p>
     <table class="responsive-table highlight">
         <tr>
             <th data-field="name">姓名</th>
-            <th data-field="class">专业和班级</th>
+            <th data-field="class">学号</th>
             <th data-field="email">邮件地址</th>
+            <th data-field="phone">电话号码</th>
+            <th data-field="status">面试状态</th>
         </tr>
     {% for reg in registrations %}
     <tr>
         <td><a href="{{url_for('.registration',id=reg.id)}}">{{reg.name}}</a></td>
         <td>{{reg.classnum}}</td>
         <td>{{reg.email}}</td>
+        <td>{{reg.phone}}</td>
+        <td><i class="material-icons left md-24">{{["","add","check","clear","query_builder"][reg.interview.status]}}</i></td>
     </tr>
     {% endfor %}
     </table>

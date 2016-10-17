@@ -94,6 +94,27 @@ class Tag(db.Model):
     name = db.Column(db.String(64), unique=True, index=True)
 
 
+class Interview(db.Model):
+    __tablename__='interviews'
+    id=db.Column(db.Integer, primary_key=True)
+    status=db.Column(db.Integer, db.ForeignKey('interview_statuses.id'),default=1)
+    level=db.Column(db.Integer())
+    opinion=db.Column(db.Text())
+
+class Interview_status(db.Model):
+    __tablename__='interview_statuses'
+    id=db.Column(db.Integer, primary_key=True)
+    text=db.Column(db.String(64))
+
+    def insert_statuses():
+        states = ("没面试呢 (ーー;)","面试通过啦~ (≧∇≦)b","面试没通过 Σ(ﾟДﾟ)","待定 _(:з」∠)_")
+        for r in states:
+            stat = Interview_status.query.filter_by(text=r).first()
+            if stat is None:
+                stat = Interview_status(text=r)
+            db.session.add(stat)
+        db.session.commit()
+
 class Registration(db.Model):
     __tablename__='registration'
     id = db.Column(db.Integer, primary_key=True)
@@ -108,6 +129,12 @@ class Registration(db.Model):
     wechat=db.Column(db.String(64))
     telegram=db.Column(db.String(64))
     personal_page=db.Column(db.Text())
+
+    @property
+    def interview(self):
+        return Interview.query.filter_by(id=self.id).first()
+
+
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'

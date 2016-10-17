@@ -1,7 +1,62 @@
-<p>哈喽, {{ name }}!</p>
+<p>哈喽, {{ reg.name }}!</p>
 <p>这封邮件表示咱收到汝的报名信息了耶，好棒~</a>.</p>
-<p>啥? 汝没办法戳它?那就用浏览器打开下面的链接呗~:</p>
-<p>{{ url_for('auth.confirm', token=token, _external=True) }}</p>
+<p>它大概像这个样子😋</p>
+<table>
+    <tr>
+        <td>姓名</td>
+        <td>{{ reg.name }}</td>
+    </tr>
+    <tr>
+        <td>学号</td>
+        <td>{{ reg.classnum }}</td>
+    </tr>
+    <tr>
+        <td>电子邮件地址</td>
+        <td>{{ reg.email }}</td>
+    </tr>
+    <tr>
+        <td>电话号码</td>
+        <td>{{ reg.phone }}</td>
+    </tr>
+    {% if reg.qq %}
+    <tr>
+        <td>QQ</td>
+        <td>{{ reg.qq }}</td>
+    </tr>
+    {% endif %}
+    {% if reg.wechat %}
+    <tr>
+        <td>微信</td>
+        <td>{{ reg.wechat }}</td>
+    </tr>
+    {% endif %}
+    {% if reg.telegram %}
+    <tr>
+        <td>Telegram</td>
+        <td>{{ reg.telegram }}</td>
+    </tr>
+    {% endif %}
+    {% if reg.personal_page %}
+    <tr>
+        <td>个人首页</td>
+        <td>{{ reg.personal_page }}</td>
+    </tr>
+    {% endif %}
+    {% if reg.ablity %}
+    <tr>
+        <td>特长与兴趣</td>
+        <td>{{ reg.ablity }}</td>
+    </tr>
+    {% endif %}
+    {% if reg.desc %}
+    <tr>
+        <td>自我介绍</td>
+        <td>{{ reg.desc }}</td>
+    </tr>
+    {% endif %}
+</table>
+<p>接下来,不管结果怎么样,咱们都会通知到汝的啦~</p>
+<p>祝好运~</p>
 <p>天科大计算机精英协会</p>
 <hr />
 <p><small>此邮件是自动发出的,所以不要回复它~(>_<~)</small></p>

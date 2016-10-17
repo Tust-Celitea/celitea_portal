@@ -15,7 +15,7 @@ class NameForm(Form):
 class RegisterForm(Form):
     name=StringField('汝是谁?', validators=[Required(),Length(0, 64)])
     email=StringField('电子邮件地址', validators=[Required(),Length(0, 64), Email()])
-    classnum=StringField('专业和班级', validators=[Required(),Length(0, 64)])
+    classnum=StringField('学号', validators=[Required(),Length(8)])
     phone=StringField('电话号码', validators=[Required(),Length(11)])
     qq = StringField('QQ', validators=[Length(0, 64)])
     wechat = StringField('微信', validators=[Length(0, 64)])
@@ -88,3 +88,15 @@ class PostForm(Form):
 class CommentForm(Form):
     body = StringField('汝不说些啥?', validators=[Required()])
     submit = SubmitField('好啦好啦,我说就是了~')
+
+class InterviewForm(Form):
+    status = RadioField('面试状态', coerce=int,validators=[Required()])
+    level = SelectField('评价等级', coerce=int,validators=[Required()])
+    opinion = TextAreaField('评价描述',validators=[Required()])
+    submit = SubmitField('提交')
+
+    def __init__(self, *args, **kwargs):
+        super(InterviewForm, self).__init__(*args, **kwargs)
+        self.status.choices=[(status.id, status.text)
+                             for status in Interview_status.query.order_by(Interview_status.id).all()]
+        self.level.choices=[(i,"☆"* i) for i in range(6)]

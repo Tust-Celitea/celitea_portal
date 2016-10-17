@@ -43,3 +43,6 @@ venv
 
 # config.py
 config.py
+
+# Images
+app/static/images/
