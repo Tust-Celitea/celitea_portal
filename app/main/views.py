@@ -69,8 +69,8 @@ def register():
         register.email = form.email.data
         register.classnum =form.classnum.data
         register.name=form.name.data
-        register.ablity=form.ablity.data
-        register.desc=form.desc.data
+        register.ablity=form.ablity.data.replace("\r\n","\n")
+        register.desc=form.desc.data.replace("\r\n","\n")
         register.qq=form.qq.data
         register.phone=form.phone.data
         register.wechat=form.wechat.data
@@ -242,10 +242,10 @@ def registration(classnum):
     reg_query=Registration.query.order_by("classnum")
     classnums={registration.classnum:registration.id for registration in reg_query.all()}
     classnum_ids=sorted(classnums.keys())
-    print(classnum_ids)
     current_reg=reg_query.filter_by(classnum=classnum).first_or_404()
     current_interview=Interview.query.filter_by(id=classnums[classnum]).first()
     current_reg_position=classnum_ids.index(current_reg.classnum)
+    #print(repr(current_reg.desc))
     try:
         priv_reg=False
         if current_reg_position-1 >= 0:
@@ -288,7 +288,7 @@ def registrations_csv():
     title="姓名,电子邮件地址,专业和班级,电话号码,QQ,微信,Telegram,个人网站,特长与兴趣,自我介绍"
     str_reg_list=[title]
     for registration in reg:
-        str_reg="{},{},{},{},{},{},{},{},{}".format(registration.name,
+        str_reg="{},{},{},{},{},{},{},{},{},{}".format(registration.name,
                                                     registration.email,
                                                     registration.classnum,
                                                     registration.phone,
@@ -296,8 +296,8 @@ def registrations_csv():
                                                     registration.wechat or "",
                                                     registration.telegram or "",
                                                     registration.personal_page or "",
-                                                    registration.ablity or "",
-                                                    registration.desc.replace("\n"," ") or "")
+                                                    registration.ablity.replace("\r\n","\n").replace("\n",' ') or "",
+                                                    registration.desc.replace("\r\n","\n").replace("\n",' ') or "")
         str_reg_list.append(str_reg)
     response=make_response("\n".join(str_reg_list))
     response.headers["Content-type"] = "text/csv"
