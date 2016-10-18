@@ -235,21 +235,28 @@ def registrations(status="all"):
         reg=[user for user in Registration.query.order_by("classnum").all() if user.interview.status==statuses[status]]
     return render_template("registrations.html",registrations=reg)
 
-@main.route('/manage/registration/<int:id>',methods=['GET', 'POST'])
+@main.route('/manage/registration/<classnum>',methods=['GET', 'POST'])
 @login_required
 @moderate_required
-def registration(id):
-    reg_query=Registration.query.order_by("id")
-    ids=[0]+[registration.id for registration in reg_query.all()]
-    current_reg=reg_query.filter_by(id=id).first_or_404()
-    current_interview=Interview.query.filter_by(id=id).first()
+def registration(classnum):
+    reg_query=Registration.query.order_by("classnum")
+    classnums={registration.classnum:registration.id for registration in reg_query.all()}
+    classnum_ids=sorted(classnums.keys())
+    print(classnum_ids)
+    current_reg=reg_query.filter_by(classnum=classnum).first_or_404()
+    current_interview=Interview.query.filter_by(id=classnums[classnum]).first()
+    current_reg_position=classnum_ids.index(current_reg.classnum)
     try:
-        priv_reg=reg_query.filter_by(id=ids[ids.index(id)-1]).first()
-    except IndexError:
+        priv_reg=False
+        if current_reg_position-1 > 0:
+            priv_reg=reg_query.filter_by(id=classnums[classnum_ids[current_reg_position-1]]).first()
+    except KeyError or IndexError :
         priv_reg=False
     try:
-        next_reg=reg_query.filter_by(id=ids[ids.index(id)+1]).first()
-    except IndexError:
+        next_reg=False
+        if current_reg_position+1<len(classnum_ids):
+            next_reg=reg_query.filter_by(id=classnums[classnum_ids[current_reg_position+1]]).first()
+    except KeyError or IndexError or AssertionError:
         next_reg=False
     form=InterviewForm()
     if form.validate_on_submit():
@@ -263,7 +270,7 @@ def registration(id):
     form.opinion.data=current_interview.opinion
     return render_template("registration.html",reg=current_reg,priv_reg=priv_reg,next_reg=next_reg,form=form)
 
-@main.route("/manage/registration/<int:id>/delete")
+@main.route("/manage/registration/delete/<int:id>")
 @login_required
 @moderate_required
 
@@ -277,7 +284,7 @@ def del_reg(id):
 @login_required
 @moderate_required
 def registrations_csv():
-    reg=Registration.query.order_by("id").all()
+    reg=Registration.query.order_by("classnum").all()
     title="姓名,电子邮件地址,专业和班级,电话号码,QQ,微信,Telegram,个人网站,特长与兴趣,自我介绍"
     str_reg_list=[title]
     for registration in reg:

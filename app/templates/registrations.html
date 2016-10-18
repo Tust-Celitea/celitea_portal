@@ -24,7 +24,7 @@
         </tr>
     {% for reg in registrations %}
     <tr>
-        <td><a href="{{url_for('.registration',id=reg.id)}}">{{reg.name}}</a></td>
+        <td><a href="{{url_for('.registration',classnum=reg.classnum)}}">{{reg.name}}</a></td>
         <td>{{reg.classnum}}</td>
         <td>{{reg.email}}</td>
         <td>{{reg.phone}}</td>
