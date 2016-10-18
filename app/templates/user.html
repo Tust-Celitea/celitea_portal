@@ -10,9 +10,6 @@
         {% if current_user.confirmed %}
         <i class="material-icons" title="已确认">verified_user</i>
         {% endif %}
-        {% if user.location %}
-            <small><span class="label label-info">{{ user.location_name() }}</span><small>
-        {% endif %}
     </h4>
     <p class="center-align">@{{ user.username }}&nbsp;</p>
     <a class='dropdown-button btn  waves-effect waves-light' href='#' data-activates='dropdown1' id="connections">
@@ -64,6 +61,7 @@
 </div>
 <!-- right -->
 <div class="col s12 m8 l8">
+    <br />
     {% if user.about_me %}
     <blockquote class="flow-text">
         {%for item in user.about_me.split("\n")%}

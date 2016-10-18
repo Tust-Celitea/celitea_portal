@@ -248,7 +248,7 @@ def registration(classnum):
     current_reg_position=classnum_ids.index(current_reg.classnum)
     try:
         priv_reg=False
-        if current_reg_position-1 > 0:
+        if current_reg_position-1 >= 0:
             priv_reg=reg_query.filter_by(id=classnums[classnum_ids[current_reg_position-1]]).first()
     except KeyError or IndexError :
         priv_reg=False
