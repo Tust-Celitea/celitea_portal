@@ -83,7 +83,7 @@ def register():
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
-        if file and allowed_file(file.filename):
+        if file and allowed_file(file.filename.lower()):
             filename = secure_filename(str(time.time()).replace(".",""))
             file.save(os.path.join(current_app.config['UPLOAD_DIR'], filename))
             register.photo = filename
@@ -233,7 +233,7 @@ def registrations(status="all"):
         reg=Registration.query.order_by("classnum").all()
     else:
         reg=[user for user in Registration.query.order_by("classnum").all() if user.interview.status==statuses[status]]
-    return render_template("registrations.html",registrations=reg)
+    return render_template("registrations.html",registrations=reg,length=len(reg))
 
 @main.route('/manage/registration/<classnum>',methods=['GET', 'POST'])
 @login_required
@@ -297,7 +297,7 @@ def registrations_csv():
                                                     registration.telegram or "",
                                                     registration.personal_page or "",
                                                     registration.ablity or "",
-                                                    registration.desc or "")
+                                                    registration.desc.replace("\n"," ") or "")
         str_reg_list.append(str_reg)
     response=make_response("\n".join(str_reg_list))
     response.headers["Content-type"] = "text/csv"
