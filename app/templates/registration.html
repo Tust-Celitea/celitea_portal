@@ -8,15 +8,21 @@
 <div class="col s12 m4 l4 center-align">
     <p class="center-align">
         <img class="responsive-img" src="{{ url_for('static', filename='registrations/{}'.format(reg.photo)) }}">
+    </p>
         {% if priv_reg %}
+        <p class="center-align">
         <a href="{{url_for('.registration',id=priv_reg.id)}}" class="waves-effect waves-light btn"><i class="material-icons left md-24">keyboard_arrow_left</i>上一个：{{priv_reg.name}}</a>
+        </p>
         {% endif %}
         {% if next_reg %}
+        <p class="center-align">
         <a href="{{url_for('.registration',id=next_reg.id)}}" class="waves-effect waves-light btn"><i class="material-icons left md-24">keyboard_arrow_right</i>下一个：{{next_reg.name}}</a>
+        </p>
         {% endif %}
         <!-- Modal Trigger -->
+        <p class="center-align">
         <a class="waves-effect waves-light btn modal-trigger red darken-1" href="#modal1"><i class="material-icons left md-24">clear</i>删除</a>
-    </p>
+        </p>
 </div>
 <!-- right -->
 <div class="col s12 m8 l8">

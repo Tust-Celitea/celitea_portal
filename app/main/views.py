@@ -77,6 +77,7 @@ def register():
         register.telegram=form.telegram.data
         register.personal_page=form.personal_page.data
         file = request.files['photo']
+        print(file,file=sys.stderr)
         # if user does not select file, browser also
         # submit a empty part without filename
         if file.filename == '':
@@ -223,7 +224,7 @@ def list_tag():
 @main.route('/manage/registrations')
 @main.route('/manage/registrations/<status>')
 @login_required
-@admin_required
+@moderate_required
 def registrations(status="all"):
     statuses={"all":0,"ready":1,"confirmed":2,"rejected":3,"talking":4}
     if not status in statuses:
@@ -236,7 +237,7 @@ def registrations(status="all"):
 
 @main.route('/manage/registration/<int:id>',methods=['GET', 'POST'])
 @login_required
-@admin_required
+@moderate_required
 def registration(id):
     reg_query=Registration.query.order_by("id")
     ids=[0]+[registration.id for registration in reg_query.all()]
@@ -264,7 +265,7 @@ def registration(id):
 
 @main.route("/manage/registration/<int:id>/delete")
 @login_required
-@admin_required
+@moderate_required
 
 def del_reg(id):
     reg_query=Registration.query.filter_by(id=id).first_or_404()
@@ -274,7 +275,7 @@ def del_reg(id):
 
 @main.route('/manage/registrations.csv')
 @login_required
-@admin_required
+@moderate_required
 def registrations_csv():
     reg=Registration.query.order_by("id").all()
     title="姓名,电子邮件地址,专业和班级,电话号码,QQ,微信,Telegram,个人网站,特长与兴趣,自我介绍"
