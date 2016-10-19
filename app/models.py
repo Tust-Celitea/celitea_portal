@@ -119,7 +119,7 @@ class Registration(db.Model):
     __tablename__='registration'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), index=True)
-    classnum = db.Column(db.String(64))
+    classnum = db.Column(db.String(64),unique=True)
     name=db.Column(db.String(64))
     ablity=db.Column(db.Text())
     desc=db.Column(db.Text())

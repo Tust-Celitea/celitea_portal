@@ -16,7 +16,7 @@ class RegisterForm(Form):
     name=StringField('汝是谁?', validators=[Required(),Length(0, 64)])
     email=StringField('电子邮件地址', validators=[Required(),Length(0, 64), Email()])
     classnum=StringField('学号', validators=[Required(),Length(8)])
-    phone=StringField('电话号码', validators=[Required(),Length(11)])
+    phone=StringField('电话号码', validators=[Required(),Length(11,11)])
     qq = StringField('QQ', validators=[Length(0, 64)])
     wechat = StringField('微信', validators=[Length(0, 64)])
     telegram=StringField('Telegram (用户名，不含"@")', validators=[Length(0, 64)])

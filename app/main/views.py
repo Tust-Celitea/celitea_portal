@@ -10,14 +10,20 @@ from ..models import *
 from ..email import send_email,send_async_email
 from ..decorators import admin_required, permission_required,moderate_required
 from .group import groups
+from ..sms import SMS_sender
 from werkzeug.utils import secure_filename
 import os
+import subprocess
 import sys
 import time
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in current_app.config['ALLOWED_EXTENSIONS']
+
+def convert_image(original,path):
+    os.system("cp {} {}/".format(original,path))
+    os.system("mogrify -resize 1000x1000\> -format jpg {}".format(original))
 
 
 @main.after_app_request
@@ -65,6 +71,8 @@ def register():
     form = RegisterForm()
     register=Registration()
     interview=Interview()
+    registrations=set([registration.classnum for registration in
+                       Registration.query.order_by("classnum").all()])
     if form.validate_on_submit():
         register.email = form.email.data
         register.classnum =form.classnum.data
@@ -77,22 +85,28 @@ def register():
         register.telegram=form.telegram.data
         register.personal_page=form.personal_page.data
         file = request.files['photo']
-        print(file,file=sys.stderr)
         # if user does not select file, browser also
         # submit a empty part without filename
+        if register.classnum in registrations:
+            flash("(╯´ω`)╯ ┻━┻ 汝不是已经报名过了么")
+            return redirect(request.url)
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename.lower()):
             filename = secure_filename(str(time.time()).replace(".",""))
-            file.save(os.path.join(current_app.config['UPLOAD_DIR'], filename))
+            upload_dir=current_app.config['UPLOAD_DIR']
+            file.save(os.path.join(upload_dir, filename))
+            convert_image(original=os.path.abspath(os.path.join(upload_dir, filename))
+                          ,path=os.path.abspath(os.path.join(upload_dir)+"/original"))
             register.photo = filename
+            send_email(register.email, '{}的报名确认~'.format(register.name),
+                       'mail/registration', reg=register)
+            print(current_app.sms.async_send_mass_sms_code("celitea-面试",register.phone))
             db.session.add(register)
             interview.id=register.id
             interview.status=1
             db.session.add(interview)
-            send_email(register.email, '{}的报名确认~'.format(register.name),
-                       'mail/registration', reg=register)
             flash('OK，坐下来放松一下呗~')
             return redirect(url_for('.index'))
         else:
@@ -277,6 +291,8 @@ def registration(classnum):
 def del_reg(id):
     reg_query=Registration.query.filter_by(id=id).first_or_404()
     db.session.delete(reg_query)
+    os.remove(os.path.abspath(os.path.join(current_app.config['UPLOAD_DIR'],reg_query.photo)))
+    os.remove(os.path.abspath(os.path.join(current_app.config['UPLOAD_DIR'],"original",reg_query.photo)))
     flash("嗯，这个不好吃~")
     return redirect(url_for('.registrations'))
 
@@ -302,3 +318,22 @@ def registrations_csv():
     response=make_response("\n".join(str_reg_list))
     response.headers["Content-type"] = "text/csv"
     return response
+
+@main.route('/manage/notificate/<status>/<template>')
+@login_required
+@moderate_required
+def notificate(template,status="all"):
+    statuses={"all":0,"ready":1,"confirmed":2,"rejected":3,"talking":4}
+    templates={"enroll":"纳新","interview":"面试"}
+    print(status in statuses,template in templates)
+    if not status in statuses :
+        abort(404)
+    if not template in templates:
+        abort(404)
+    if status=="all":
+        reg=[user.phone[:11] for user in Registration.query.order_by("classnum").all()]
+    else:
+        reg=[user.phone[:11] for user in Registration.query.order_by("classnum").all() if user.interview.status==statuses[status]]
+    print(current_app.sms.async_send_mass_sms_code("celitea-{}".format(templates[template]),*reg))
+    flash("嗯，这个不好吃~")
+    return redirect(url_for('.registrations'))
