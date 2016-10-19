@@ -92,7 +92,7 @@ class CommentForm(Form):
 class InterviewForm(Form):
     status = RadioField('面试状态', coerce=int,validators=[Required()])
     level = SelectField('评价等级', coerce=int,validators=[Required()])
-    opinion = TextAreaField('评价描述',validators=[Required()])
+    opinion = TextAreaField('评价描述')
     submit = SubmitField('提交')
 
     def __init__(self, *args, **kwargs):

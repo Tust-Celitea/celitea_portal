@@ -291,8 +291,11 @@ def registration(classnum):
 def del_reg(id):
     reg_query=Registration.query.filter_by(id=id).first_or_404()
     db.session.delete(reg_query)
-    os.remove(os.path.abspath(os.path.join(current_app.config['UPLOAD_DIR'],reg_query.photo)))
-    os.remove(os.path.abspath(os.path.join(current_app.config['UPLOAD_DIR'],"original",reg_query.photo)))
+    try:
+        os.remove(os.path.abspath(os.path.join(current_app.config['UPLOAD_DIR'],reg_query.photo)))
+        os.remove(os.path.abspath(os.path.join(current_app.config['UPLOAD_DIR'],"original",reg_query.photo)))
+    except FileNotFoundError:
+        pass
     flash("嗯，这个不好吃~")
     return redirect(url_for('.registrations'))
 
