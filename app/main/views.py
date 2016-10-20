@@ -300,10 +300,17 @@ def del_reg(id):
     return redirect(url_for('.registrations'))
 
 @main.route('/manage/registrations.csv')
+@main.route('/manage/registrations/<status>.csv')
 @login_required
 @moderate_required
-def registrations_csv():
-    reg=Registration.query.order_by("classnum").all()
+def registrations_csv(status="all"):
+    statuses={"all":0,"ready":1,"confirmed":2,"rejected":3,"talking":4}
+    if not status in statuses:
+        abort(404)
+    if status=="all":
+        reg=Registration.query.order_by("classnum").all()
+    else:
+        reg=[user for user in Registration.query.order_by("classnum").all() if user.interview.status==statuses[status]]
     title="姓名,电子邮件地址,专业和班级,电话号码,QQ,微信,Telegram,个人网站,特长与兴趣,自我介绍"
     str_reg_list=[title]
     for registration in reg:
