@@ -41,7 +41,7 @@
                 </small>
             </a>
             <ul class="right hide-on-med-and-down">
-                <li><a href="https://celitea.xyz"><i class="material-icons left">home</i> 社团首页</a></li>
+                <li><a href="https://celitea.cn"><i class="material-icons left">home</i> 社团首页</a></li>
                 {% if not current_user.is_authenticated %}
                 <li><a href="{{ url_for('main.register') }}"><i class="material-icons left">assignment</i> 报名</a></li>
                 {% endif %}
@@ -77,7 +77,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="https://celitea.xyz">
+                    <a href="https://celitea.cn">
                         {% if current_user.is_authenticated %}
                              (σ≧∀≦)σ
                              {% else %}

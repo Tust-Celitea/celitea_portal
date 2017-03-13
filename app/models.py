@@ -121,6 +121,7 @@ class Registration(db.Model):
     email = db.Column(db.String(64), index=True)
     classnum = db.Column(db.String(64),unique=True)
     name=db.Column(db.String(64))
+    gender=db.Column(db.Integer)
     ablity=db.Column(db.Text())
     desc=db.Column(db.Text())
     phone=db.Column(db.String(64))

@@ -30,7 +30,14 @@
 <!-- right -->
 <div class="col s12 m8 l8">
     <h4 class="user-header">{{ reg.name }}</h4>
-    <p>@{{ reg.clssnum }}&nbsp;</p>
+    <p>{{ reg.classnum }}&nbsp;</p>
+    <p>
+        {% if reg.gender %}
+            {{ {1:"♂🚹",2:"♀🚺"}[reg.gender] }}
+        {% else %}
+            ❓
+        {% endif %}
+    </p>
     {% if reg.desc %}
     <blockquote class="flow-text">
         {{reg.desc}}
