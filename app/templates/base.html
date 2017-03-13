@@ -43,7 +43,7 @@
             <ul class="right hide-on-med-and-down">
                 <li><a href="https://celitea.cn"><i class="material-icons left">home</i> 社团首页</a></li>
                 {% if not current_user.is_authenticated %}
-                <li><a href="{{ url_for('main.register') }}"><i class="material-icons left">assignment</i> 报名</a></li>
+                <li><a href="{{ url_for('main.apply') }}"><i class="material-icons left">assignment</i> 报名</a></li>
                 {% endif %}
                 {% if current_user.is_authenticated %}
                 <ul class="dropdown-content" id="dropdown">
@@ -91,7 +91,7 @@
                 <li><a href="{{ url_for('auth.change_password') }}">更改密码</a></li>
                 <li><a href="{{ url_for('auth.logout') }}"><i class="material-icons">exit_to_app</i> 注销……</a></li>
                 {% else %}
-                <li><a href="{{ url_for('main.register') }}"><i class="material-icons left">assignment</i> 报名</a></li>
+                <li><a href="{{ url_for('main.apply') }}"><i class="material-icons left">assignment</i> 报名</a></li>
                 <li><a href="{{ url_for('auth.login') }}"><i class="material-icons right">lock</i> 登录</a></li>
                 {% endif %}
             </ul>

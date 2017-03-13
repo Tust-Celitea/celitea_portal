@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from flask_sqlalchemy import get_debug_queries
 from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, PostForm,\
-    CommentForm,RegisterForm,InterviewForm
+    CommentForm,RegistrationForm,InterviewForm
 from .. import db
 from ..models import *
 from ..email import send_email,send_async_email
@@ -66,52 +66,56 @@ def index():
     return render_template('index.html', form=form, posts=posts,
                             pagination=pagination)
 
-@main.route('/register', methods=['GET', 'POST'])
-def register():
-    form = RegisterForm()
-    register=Registration()
-    interview=Interview()
+@main.route('/apply',methods=['GET', 'POST'])
+def apply():
+    form = RegistrationForm()
     registrations=set([registration.classnum for registration in
                        Registration.query.order_by("classnum").all()])
-    if form.validate_on_submit():
-        register.email = form.email.data
-        register.classnum =form.classnum.data
-        register.name=form.name.data
-        register.ablity=form.ablity.data.replace("\r\n","\n")
-        register.desc=form.desc.data.replace("\r\n","\n")
-        register.qq=form.qq.data
-        register.phone=form.phone.data
-        register.wechat=form.wechat.data
-        register.telegram=form.telegram.data
-        register.personal_page=form.personal_page.data
-        file = request.files['photo']
-        # if user does not select file, browser also
-        # submit a empty part without filename
-        if register.classnum in registrations:
-            flash("(╯´ω`)╯ ┻━┻ 汝不是已经报名过了么")
-            return redirect(request.url)
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename.lower()):
-            filename = secure_filename(str(time.time()).replace(".",""))
-            upload_dir=current_app.config['UPLOAD_DIR']
-            file.save(os.path.join(upload_dir, filename))
-            convert_image(original=os.path.abspath(os.path.join(upload_dir, filename))
-                          ,path=os.path.abspath(os.path.join(upload_dir)+"/original"))
-            register.photo = filename
-            send_email(register.email, '{}的报名确认~'.format(register.name),
-                       'mail/registration', reg=register)
-            print(current_app.sms.async_send_mass_sms_code("celitea-面试",register.phone))
-            db.session.add(register)
-            interview.id=register.id
-            interview.status=1
-            db.session.add(interview)
-            flash('OK，坐下来放松一下呗~')
-            return redirect(url_for('.index'))
-        else:
-            flash("这不是照片 (╯=3=)╯ ┻━┻")
+    if request.method == 'POST':
+        if not form.validate_on_submit():
+            register = Registration()
+            register.email = form.email.data
+            register.classnum =form.classnum.data
+            register.name=form.name.data
+            register.gender=form.gender.data
+            register.ablity=form.ablity.data.replace("\r\n","\n")
+            register.desc=form.desc.data.replace("\r\n","\n")
+            register.qq=form.qq.data
+            register.phone=form.phone.data
+            register.wechat=form.wechat.data
+            register.telegram=form.telegram.data
+            register.personal_page=form.personal_page.data
+            file = request.files['photo']
+            print(file.filename)
+            # if user does not select file, browser also
+            # submit a empty part without filename
+            if register.classnum in registrations:
+                flash("(╯´ω`)╯ ┻━┻ 汝不是已经报名过了么")
+                return redirect(request.url)
+            if not file.filename:
+                flash('No selected file')
+                return redirect(request.url)
+            if file and allowed_file(file.filename.lower()):
+                interview=Interview()
+                filename = secure_filename(str(time.time()).replace(".",""))
+                upload_dir=current_app.config['UPLOAD_DIR']
+                file.save(os.path.join(upload_dir, filename))
+                convert_image(original=os.path.abspath(os.path.join(upload_dir, filename))
+                              ,path=os.path.abspath(os.path.join(upload_dir)+"/original"))
+                register.photo = filename
+                send_email(register.email, '{}的报名确认~'.format(register.name),
+                           'mail/registration', reg=register)
+                print(current_app.sms.async_send_mass_sms_code("celitea-面试",register.phone))
+                db.session.add(register)
+                interview.id=register.id
+                interview.status=1
+                db.session.add(interview)
+                flash('OK，坐下来放松一下呗~')
+                return redirect(url_for('.index'))
+            else:
+                flash("这不是照片 (╯=3=)╯ ┻━┻")
     return render_template('register.html', form=form)
+
 
 @main.route('/user/<username>')
 @login_required

@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm as Form
 from wtforms import StringField, TextAreaField, BooleanField, SelectField,\
     SubmitField,RadioField , SelectMultipleField, FileField
-from wtforms.validators import Required, Length, Email, Regexp, NoneOf
+from wtforms.validators import Required, Length, Email, Regexp, NoneOf, DataRequired
 from wtforms import ValidationError
 from .pagedown import PageDownField
 from ..models import *
@@ -12,11 +12,11 @@ class NameForm(Form):
     name = StringField('汝是谁?', validators=[Required()])
     submit = SubmitField('OK')
 
-class RegisterForm(Form):
+class RegistrationForm(Form):
     name=StringField('汝是谁?', validators=[Required(),Length(0, 64)])
     email=StringField('电子邮件地址', validators=[Required(),Length(0, 64), Email()])
     classnum=StringField('学号', validators=[Required(),Length(8)])
-    gender=SelectField('性别')
+    gender=SelectField('性别',validators=[Required()])
     phone=StringField('电话号码', validators=[Required(),Length(11,11)])
     qq = StringField('QQ', validators=[Length(0, 64)])
     wechat = StringField('微信', validators=[Length(0, 64)])
@@ -28,7 +28,7 @@ class RegisterForm(Form):
     submit = SubmitField('就这样?')
 
     def __init__(self, *args, **kwargs):
-        super(RegisterForm, self).__init__(*args, **kwargs)
+        super(RegistrationForm, self).__init__(*args, **kwargs)
         self.gender.choices = [(1,"男"),(2,"女")]
 
 class EditProfileForm(Form):

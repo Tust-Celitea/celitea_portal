@@ -212,7 +212,7 @@ action="" is what we want, from http://www.ietf.org/rfc/rfc2396.txt:
   {% set _ = _enctype.append(enctype) %}
 {%- endif %}
 <form
-  {%- if action != None %} action="{{action}}"{% endif -%}
+  {%- if action %} action="{{action}}"{% endif -%}
   {%- if id %} id="{{id}}"{% endif -%}
   {%- if method %} method="{{method}}"{% endif %}
   class="form
