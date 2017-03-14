@@ -66,6 +66,10 @@ def index():
     return render_template('index.html', form=form, posts=posts,
                             pagination=pagination)
 
+@main.route('/register',methods=['GET', 'POST'])
+def register():
+    return redirect(url_for('.apply'))
+
 @main.route('/apply',methods=['GET', 'POST'])
 def apply():
     form = RegistrationForm()

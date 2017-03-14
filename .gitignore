@@ -45,4 +45,5 @@ venv
 config.py
 
 # Images
-app/static/registrations/
+app/static/registrations/*
+
