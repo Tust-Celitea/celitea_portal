@@ -109,7 +109,7 @@ def apply():
                 register.photo = filename
                 send_email(register.email, '{}的报名确认~'.format(register.name),
                            'mail/registration', reg=register)
-                print(current_app.sms.async_send_mass_sms_code("celitea-面试",register.phone))
+                print(current_app.sms.async_send_mass_sms_code("celitea-纳新",register.phone))
                 db.session.add(register)
                 interview.id=register.id
                 interview.status=1
